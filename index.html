@@ -1,0 +1,120 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Build Your First AI Project in 60 Minutes</title>
+<meta name="description" content="Free live workshop for final-year engineers. Deploy your first AI project in 60 minutes.">
+<style>
+:root{--bg:#0b0d14;--card:rgba(255,255,255,.05);--line:rgba(255,255,255,.1);--ink:#f2f4fa;--mut:#9aa3b8;--a:#7c6cff;--b:#22d3ee;--ok:#4ade80}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;background:radial-gradient(900px 500px at 15% -10%,#2a2470 0,transparent 60%),radial-gradient(700px 500px at 100% 0,#0b4b5a 0,transparent 55%),var(--bg);color:var(--ink);font:16px/1.55 Inter,system-ui,-apple-system,"Segoe UI",sans-serif;min-height:100vh}
+.w{max-width:1000px;margin:0 auto;padding:20px}
+nav{display:flex;justify-content:space-between;align-items:center;padding:6px 0 28px}
+nav b{letter-spacing:.3px}nav a{color:var(--mut);text-decoration:none;margin-left:18px;font-size:14px}
+.hero{display:grid;grid-template-columns:1.2fr .8fr;gap:28px;align-items:center}
+@media(max-width:800px){.hero{grid-template-columns:1fr}}
+.tag{display:inline-block;border:1px solid var(--line);background:var(--card);border-radius:99px;padding:5px 12px;font-size:13px;color:var(--b)}
+h1{font-size:clamp(34px,6vw,58px);line-height:1.05;margin:16px 0;letter-spacing:-1.5px}
+h1 span{background:linear-gradient(90deg,var(--a),var(--b));-webkit-background-clip:text;background-clip:text;color:transparent}
+.lead{color:var(--mut);font-size:18px;max-width:520px}
+.stats{display:flex;gap:22px;margin-top:22px;flex-wrap:wrap}.stats div b{display:block;font-size:26px}.stats span{color:var(--mut);font-size:13px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:22px;backdrop-filter:blur(10px)}
+.card h2{margin:0 0 4px;font-size:20px}.sub{color:var(--mut);font-size:14px;margin-bottom:10px}
+label{display:block;font-size:12px;color:var(--mut);margin:12px 0 5px;text-transform:uppercase;letter-spacing:.6px}
+input,select,textarea{width:100%;padding:12px 14px;border-radius:12px;border:1px solid var(--line);background:rgba(0,0,0,.35);color:var(--ink);font:inherit;outline:none}
+input:focus,select:focus,textarea:focus{border-color:var(--a);box-shadow:0 0 0 3px rgba(124,108,255,.25)}
+textarea{min-height:120px;resize:vertical}
+button{cursor:pointer;font:inherit;font-weight:700;border:0;border-radius:12px;padding:13px 20px;color:#fff;background:linear-gradient(90deg,var(--a),#5b8cff);margin-top:16px;width:100%}
+button.g{background:transparent;border:1px solid var(--line);color:var(--ink)}button:disabled{opacity:.5}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}@media(max-width:560px){.row{grid-template-columns:1fr}}
+.ring{width:150px;height:150px;margin:0 auto 8px;display:block}
+section{margin-top:56px}section>h2{font-size:28px;letter-spacing:-.5px;margin:0 0 16px}
+.g3{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+.step b{display:inline-grid;place-items:center;width:30px;height:30px;border-radius:50%;background:linear-gradient(90deg,var(--a),var(--b));margin-bottom:8px}
+.lb{display:flex;gap:12px;padding:10px 0;border-bottom:1px solid var(--line)}.lb:last-child{border:0}.lb i{font-style:normal;color:var(--mut);width:22px}.lb .n{flex:1}.lb .c{font-weight:800;color:var(--b)}
+.err{color:#fca5a5;font-size:14px;margin-top:10px;min-height:20px}
+.code{font:800 30px ui-monospace,Menlo,monospace;letter-spacing:4px;text-align:center;padding:14px;border:1px dashed var(--a);border-radius:14px;margin:10px 0}
+.sc{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin:14px 0}.sc div{background:rgba(0,0,0,.3);border:1px solid var(--line);border-radius:12px;padding:12px;text-align:center}.sc b{font-size:24px;display:block;color:var(--b)}.sc span{font-size:12px;color:var(--mut)}
+.hide{display:none}footer{margin:60px 0 20px;color:var(--mut);font-size:13px;text-align:center}
+</style></head><body><div class="w">
+<nav><b>⚡ BuildAI Workshop</b><div><a href="#how">How it works</a><a href="#board">Leaderboard</a><a href="#eval">AI Reviewer</a></div></nav>
+
+<div class="hero"><div>
+<span class="tag">Free · Live online · 60 minutes</span>
+<h1>Build your <span>first AI project</span> in 60 minutes.</h1>
+<p class="lead">For final-year engineers. Zero AI projects today, one deployed and resume-ready by the end of the hour.</p>
+<div class="stats"><div><b id="cnt">–</b><span>registered</span></div><div><b id="left">–</b><span>seats left</span></div><div><b id="ev">–</b><span>starts</span></div></div>
+</div>
+<div class="card" id="regCard"><svg class="ring" viewBox="0 0 120 120"><circle cx="60" cy="60" r="50" fill="none" stroke="rgba(255,255,255,.1)" stroke-width="10"/><circle id="arc" cx="60" cy="60" r="50" fill="none" stroke="url(#g)" stroke-width="10" stroke-linecap="round" stroke-dasharray="314" stroke-dashoffset="314" transform="rotate(-90 60 60)" style="transition:stroke-dashoffset .8s"/><defs><linearGradient id="g"><stop offset="0" stop-color="#7c6cff"/><stop offset="1" stop-color="#22d3ee"/></linearGradient></defs><text x="60" y="66" text-anchor="middle" fill="#f2f4fa" font-size="22" font-weight="800" id="pct">0%</text></svg>
+<h2 style="text-align:center">Reserve your free seat</h2>
+<form id="f" novalidate>
+<label>Full name</label><input id="name" autocomplete="name" maxlength="80" required>
+<label>College email</label><input id="email" type="email" autocomplete="email" required>
+<div class="row"><div><label>College</label><input id="college" maxlength="100" required></div>
+<div><label>Branch</label><select id="branch"><option>CSE / IT</option><option>ECE / EEE</option><option>Mech / Civil</option><option>Other</option></select></div></div>
+<label>Referral code (optional)</label><input id="ref" maxlength="8" style="text-transform:uppercase">
+<button id="go">Register free →</button><div class="err" id="err"></div></form></div>
+<div class="card hide" id="doneCard"><h2>You’re in 🎉</h2><div class="sub">Your referral code. Friends who use it move you up the board.</div>
+<div class="code" id="myCode"></div><div class="sub" id="myRef"></div>
+<button id="wa">Share on WhatsApp</button><button class="g" id="cp">Copy invite link</button></div>
+</div>
+
+<section id="how"><h2>How it works</h2><div class="g3">
+<div class="card step"><b>1</b><h3>Register</h3><p class="sub">20 seconds. Get a personal code.</p></div>
+<div class="card step"><b>2</b><h3>Invite friends</h3><p class="sub">Top 5 referrers win ₹200 vouchers.</p></div>
+<div class="card step"><b>3</b><h3>Build live</h3><p class="sub">Follow along for 60 minutes and deploy.</p></div>
+<div class="card step"><b>4</b><h3>Get AI feedback</h3><p class="sub">Submit your project, get scored instantly.</p></div></div></section>
+
+<section id="board"><h2>Referral leaderboard</h2><div class="card" id="lb"><span class="sub">No referrals yet. Be the first.</span></div></section>
+
+<section id="eval"><h2>AI project reviewer</h2><div class="card">
+<div class="sub">Try it: describe a project idea and get a rubric score out of 50.</div>
+<label>Project title</label><input id="pt" maxlength="100">
+<label>What it does, who it’s for, which AI it uses</label><textarea id="pd" maxlength="1500"></textarea>
+<label>Demo or repo link (optional)</label><input id="pl" maxlength="200">
+<button id="sc">Score my project</button><div class="err" id="eerr"></div>
+<div id="eout" class="hide"><h2 style="font-size:40px;margin:14px 0 0"><span id="tot"></span><small style="font-size:16px;color:var(--mut)"> / 50 · <span id="vd"></span></small></h2>
+<div class="sc" id="scs"></div><p><b>Strengths.</b> <span id="st"></span></p><p><b>Biggest fix.</b> <span id="fx"></span></p><p><b>Next 30 minutes.</b> <span id="nx"></span></p></div></div></section>
+<footer>Free workshop · Seats limited · Built with Claude</footer></div>
+
+<script src="config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script>
+const $=i=>document.getElementById(i),C=window.CFG||{},GOAL=C.GOAL||500;
+const sb=(C.SUPABASE_URL&&C.SUPABASE_ANON_KEY&&window.supabase)?supabase.createClient(C.SUPABASE_URL,C.SUPABASE_ANON_KEY):null;
+let mine=null;$("ev").textContent=C.EVENT||"Soon";
+const q=new URLSearchParams(location.search).get("ref");if(q)$("ref").value=q.toUpperCase().slice(0,8);
+try{mine=localStorage.getItem("bw_code")}catch(e){}
+const esc=s=>{const d=document.createElement("div");d.textContent=s;return d.innerHTML};
+const link=()=>location.origin+location.pathname+"?ref="+mine;
+const msg=()=>`I just registered for “Build Your First AI Project in 60 Minutes”, a free live workshop. Join with my code ${mine}: ${link()}`;
+async function refresh(){
+  if(!sb){$("cnt").textContent="–";$("left").textContent="–";$("err").textContent="Setup needed: add Supabase keys in config.js.";return}
+  const {data:n}=await sb.rpc("reg_count");const c=n||0;
+  $("cnt").textContent=c;$("left").textContent=Math.max(0,GOAL-c);
+  $("arc").style.strokeDashoffset=314*(1-Math.min(1,c/GOAL));$("pct").textContent=Math.min(100,Math.round(c/GOAL*100))+"%";
+  const {data:l}=await sb.rpc("leaderboard");
+  $("lb").innerHTML=(l&&l.length)?l.map((r,i)=>`<div class="lb"><i>${i+1}</i><span class="n">${esc(r.name)} <span class="sub">${esc(r.college)}</span></span><span class="c">${r.referrals}</span></div>`).join(""):'<span class="sub">No referrals yet. Be the first.</span>';
+  if(mine){const {data:m}=await sb.rpc("my_referrals",{p_code:mine});$("myRef").textContent=(m||0)+" referral(s) so far"}
+}
+function done(){$("regCard").classList.add("hide");$("doneCard").classList.remove("hide");$("myCode").textContent=mine}
+$("f").onsubmit=async e=>{e.preventDefault();$("err").textContent="";
+  const name=$("name").value.trim(),email=$("email").value.trim(),college=$("college").value.trim();
+  if(name.length<2||college.length<2||!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)){$("err").textContent="Please fill name, a valid email and college.";return}
+  if(!sb){$("err").textContent="Setup needed: add Supabase keys in config.js.";return}
+  $("go").disabled=true;
+  const {data,error}=await sb.rpc("register",{p_name:name,p_email:email,p_college:college,p_branch:$("branch").value,p_ref:$("ref").value});
+  $("go").disabled=false;
+  if(error){$("err").textContent="Could not register. Please try again.";return}
+  mine=data;try{localStorage.setItem("bw_code",mine)}catch(e){}done();refresh()};
+$("wa").onclick=()=>open("https://wa.me/?text="+encodeURIComponent(msg()),"_blank");
+$("cp").onclick=async()=>{try{await navigator.clipboard.writeText(msg());$("cp").textContent="Copied ✓"}catch(e){$("cp").textContent=link()}};
+const R=["Problem clarity","Use of AI","Feasible in 60 min","Demo-ability","Originality"];
+$("sc").onclick=async()=>{$("eerr").textContent="";$("sc").disabled=true;$("sc").textContent="Reviewing…";
+  try{const r=await fetch("/api/evaluate",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({title:$("pt").value,description:$("pd").value,link:$("pl").value})});
+    const d=await r.json();if(!r.ok)throw new Error(d.error||"Failed");
+    $("tot").textContent=d.scores.reduce((a,b)=>a+b,0);$("vd").textContent=d.verdict||"";
+    $("scs").innerHTML=R.map((n,i)=>`<div><b>${d.scores[i]}</b><span>${n}</span></div>`).join("");
+    $("st").textContent=d.strengths||"";$("fx").textContent=d.fix||"";$("nx").textContent=d.next||"";$("eout").classList.remove("hide")}
+  catch(e){$("eerr").textContent=e.message}
+  $("sc").disabled=false;$("sc").textContent="Score my project"};
+if(mine)done();refresh();setInterval(refresh,30000);
+</script></body></html>
