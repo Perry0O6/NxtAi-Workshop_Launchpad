@@ -31,11 +31,11 @@ LINK: ${link.slice(0, 200) || "none"}`;
     return res.status(500).json({ error: "GEMINI_API_KEY is not configured in Vercel" });
   }
 
-  // Active models supported on v1beta
+  // Active models supported on the current v1beta API
   const models = [
-    process.env.GEMINI_MODEL || "gemini-2.5-flash",
-    "gemini-2.0-flash",
-    "gemini-2.0-flash-lite"
+    process.env.GEMINI_MODEL || "gemini-3.5-flash-lite",
+    "gemini-3.8-flash",
+    "gemini-2.0-flash"
   ];
 
   let lastError = null;
