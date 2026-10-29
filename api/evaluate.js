@@ -25,16 +25,16 @@ TITLE: ${title}
 DESCRIPTION: ${description}
 LINK: ${link.slice(0, 200) || "none"}`;
 
-  const model = process.env.GEMINI_MODEL || "gemini-2.5-flash";
+  // Updated to the current active model
+  const model = process.env.GEMINI_MODEL || "gemini-3.8-flash";
   const apiKey = (process.env.GEMINI_API_KEY || "").trim();
 
   if (!apiKey) {
-    return res.status(500).json({ error: "GEMINI_API_KEY is not set in Vercel environment variables." });
+    return res.status(500).json({ error: "GEMINI_API_KEY is not configured in Vercel" });
   }
 
   try {
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
-    const r = await fetch(url, {
+    const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`, {
       method: "POST",
       headers: {
         "content-type": "application/json"
@@ -59,19 +59,18 @@ LINK: ${link.slice(0, 200) || "none"}`;
     const endIdx = txt.lastIndexOf("}");
 
     if (startIdx === -1 || endIdx === -1) {
-      console.error("Gemini raw text output:", txt);
-      throw new Error("Invalid response format received from model");
+      throw new Error("Invalid format received from Gemini");
     }
 
     const out = JSON.parse(txt.slice(startIdx, endIdx + 1));
     if (!Array.isArray(out.scores) || out.scores.length !== 5) {
-      throw new Error("Invalid score array format");
+      throw new Error("Score format mismatch");
     }
 
     out.scores = out.scores.map(n => Math.max(0, Math.min(10, Math.round(+n || 0))));
     return res.status(200).json(out);
   } catch (e) {
-    console.error("Serverless execution error:", e);
+    console.error("Evaluation runtime error:", e);
     return res.status(502).json({ error: e.message || "Reviewer unavailable, try again." });
   }
 }
