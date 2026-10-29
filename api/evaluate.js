@@ -31,63 +31,57 @@ LINK: ${link.slice(0, 200) || "none"}`;
     return res.status(500).json({ error: "GEMINI_API_KEY is not configured in Vercel" });
   }
 
-  try {
-    const models = [
-      process.env.GEMINI_MODEL || "gemini-2.0-flash",
-      "gemini-2.0-flash-lite",
-      "gemini-1.5-flash"
-    ];
+  // Active models supported on v1beta
+  const models = [
+    process.env.GEMINI_MODEL || "gemini-2.5-flash",
+    "gemini-2.0-flash",
+    "gemini-2.0-flash-lite"
+  ];
 
-    let lastError = null;
+  let lastError = null;
 
-    for (const m of models) {
-      try {
-        const url = `https://generativelanguage.googleapis.com/v1beta/models/${m}:generateContent?key=${apiKey}`;
-        const r = await fetch(url, {
-          method: "POST",
-          headers: { "content-type": "application/json" },
-          body: JSON.stringify({
-            contents: [{ parts: [{ text: prompt }] }],
-            generationConfig: { responseMimeType: "application/json", temperature: 0.3 }
-          })
-        });
+  for (const m of models) {
+    try {
+      const url = `https://generativelanguage.googleapis.com/v1beta/models/${m}:generateContent?key=${apiKey}`;
+      const r = await fetch(url, {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: prompt }] }],
+          generationConfig: { responseMimeType: "application/json", temperature: 0.3 }
+        })
+      });
 
-        const data = await r.json();
+      const data = await r.json();
 
-        if (!r.ok) {
-          lastError = data.error?.message || `Status ${r.status}`;
-          console.warn(`Model ${m} failed (${r.status}): ${lastError}. Trying fallback...`);
-          continue;
-        }
-
-        const txt = data?.candidates?.[0]?.content?.parts?.map(p => p.text || "").join("") || "";
-        const startIdx = txt.indexOf("{");
-        const endIdx = txt.lastIndexOf("}");
-
-        if (startIdx === -1 || endIdx === -1) {
-          lastError = "Invalid response format received from model";
-          console.warn(`Model ${m}: ${lastError}. Trying fallback...`);
-          continue;
-        }
-
-        const out = JSON.parse(txt.slice(startIdx, endIdx + 1));
-        if (!Array.isArray(out.scores) || out.scores.length !== 5) {
-          lastError = "Invalid score array format";
-          console.warn(`Model ${m}: ${lastError}. Trying fallback...`);
-          continue;
-        }
-
-        out.scores = out.scores.map(n => Math.max(0, Math.min(10, Math.round(+n || 0))));
-        return res.status(200).json(out);
-      } catch (e) {
-        lastError = e.message;
-        console.warn(`Model ${m} threw: ${lastError}. Trying fallback...`);
+      if (!r.ok) {
+        lastError = data.error?.message || `Status ${r.status}`;
+        console.warn(`Model ${m} failed (${r.status}): ${lastError}. Trying next model...`);
+        continue;
       }
-    }
 
-    return res.status(503).json({ error: lastError || "All models are currently overloaded. Please retry in a few seconds." });
-  } catch (e) {
-    console.error("Unexpected error in evaluate handler:", e);
-    return res.status(500).json({ error: "Internal server error." });
+      const txt = data?.candidates?.[0]?.content?.parts?.map(p => p.text || "").join("") || "";
+      const startIdx = txt.indexOf("{");
+      const endIdx = txt.lastIndexOf("}");
+
+      if (startIdx === -1 || endIdx === -1) {
+        lastError = "Invalid response format received from model";
+        continue;
+      }
+
+      const out = JSON.parse(txt.slice(startIdx, endIdx + 1));
+      if (!Array.isArray(out.scores) || out.scores.length !== 5) {
+        lastError = "Invalid score array format";
+        continue;
+      }
+
+      out.scores = out.scores.map(n => Math.max(0, Math.min(10, Math.round(+n || 0))));
+      return res.status(200).json(out);
+    } catch (e) {
+      lastError = e.message;
+      console.warn(`Model ${m} encountered an error: ${lastError}. Trying next model...`);
+    }
   }
+
+  return res.status(503).json({ error: lastError || "All models are currently overloaded. Please retry in a few seconds." });
 }
