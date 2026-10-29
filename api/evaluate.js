@@ -25,7 +25,6 @@ TITLE: ${title}
 DESCRIPTION: ${description}
 LINK: ${link.slice(0, 200) || "none"}`;
 
-  const model = process.env.GEMINI_MODEL || "gemini-3.8-flash";
   const apiKey = (process.env.GEMINI_API_KEY || "").trim();
 
   if (!apiKey) {
@@ -33,44 +32,62 @@ LINK: ${link.slice(0, 200) || "none"}`;
   }
 
   try {
-    const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`, {
-      method: "POST",
-      headers: {
-        "content-type": "application/json"
-      },
-      body: JSON.stringify({
-        contents: [{ parts: [{ text: prompt }] }],
-        generationConfig: { responseMimeType: "application/json", temperature: 0.3 }
-      })
-    });
+    const models = [
+      process.env.GEMINI_MODEL || "gemini-2.0-flash",
+      "gemini-2.0-flash-lite",
+      "gemini-1.5-flash"
+    ];
 
-    const data = await r.json();
+    let lastError = null;
 
-    if (!r.ok) {
-      console.error("Gemini API Error:", JSON.stringify(data));
-      return res.status(r.status).json({
-        error: data.error?.message || `Gemini API returned status ${r.status}`
-      });
+    for (const m of models) {
+      try {
+        const url = `https://generativelanguage.googleapis.com/v1beta/models/${m}:generateContent?key=${apiKey}`;
+        const r = await fetch(url, {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({
+            contents: [{ parts: [{ text: prompt }] }],
+            generationConfig: { responseMimeType: "application/json", temperature: 0.3 }
+          })
+        });
+
+        const data = await r.json();
+
+        if (!r.ok) {
+          lastError = data.error?.message || `Status ${r.status}`;
+          console.warn(`Model ${m} failed (${r.status}): ${lastError}. Trying fallback...`);
+          continue;
+        }
+
+        const txt = data?.candidates?.[0]?.content?.parts?.map(p => p.text || "").join("") || "";
+        const startIdx = txt.indexOf("{");
+        const endIdx = txt.lastIndexOf("}");
+
+        if (startIdx === -1 || endIdx === -1) {
+          lastError = "Invalid response format received from model";
+          console.warn(`Model ${m}: ${lastError}. Trying fallback...`);
+          continue;
+        }
+
+        const out = JSON.parse(txt.slice(startIdx, endIdx + 1));
+        if (!Array.isArray(out.scores) || out.scores.length !== 5) {
+          lastError = "Invalid score array format";
+          console.warn(`Model ${m}: ${lastError}. Trying fallback...`);
+          continue;
+        }
+
+        out.scores = out.scores.map(n => Math.max(0, Math.min(10, Math.round(+n || 0))));
+        return res.status(200).json(out);
+      } catch (e) {
+        lastError = e.message;
+        console.warn(`Model ${m} threw: ${lastError}. Trying fallback...`);
+      }
     }
 
-    const txt = data?.candidates?.[0]?.content?.parts?.map(p => p.text || "").join("") || "";
-    const startIdx = txt.indexOf("{");
-    const endIdx = txt.lastIndexOf("}");
-
-    if (startIdx === -1 || endIdx === -1) {
-      console.error("Gemini raw text output:", txt);
-      throw new Error("Invalid response format received from model");
-    }
-
-    const out = JSON.parse(txt.slice(startIdx, endIdx + 1));
-    if (!Array.isArray(out.scores) || out.scores.length !== 5) {
-      throw new Error("Invalid score array format");
-    }
-
-    out.scores = out.scores.map(n => Math.max(0, Math.min(10, Math.round(+n || 0))));
-    return res.status(200).json(out);
+    return res.status(503).json({ error: lastError || "All models are currently overloaded. Please retry in a few seconds." });
   } catch (e) {
-    console.error("Evaluation runtime error:", e);
-    return res.status(502).json({ error: e.message || "Reviewer unavailable, try again." });
+    console.error("Unexpected error in evaluate handler:", e);
+    return res.status(500).json({ error: "Internal server error." });
   }
 }
