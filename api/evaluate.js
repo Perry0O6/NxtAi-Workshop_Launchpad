@@ -25,7 +25,6 @@ TITLE: ${title}
 DESCRIPTION: ${description}
 LINK: ${link.slice(0, 200) || "none"}`;
 
-  // Updated to the current active model
   const model = process.env.GEMINI_MODEL || "gemini-3.8-flash";
   const apiKey = (process.env.GEMINI_API_KEY || "").trim();
 
@@ -59,12 +58,13 @@ LINK: ${link.slice(0, 200) || "none"}`;
     const endIdx = txt.lastIndexOf("}");
 
     if (startIdx === -1 || endIdx === -1) {
-      throw new Error("Invalid format received from Gemini");
+      console.error("Gemini raw text output:", txt);
+      throw new Error("Invalid response format received from model");
     }
 
     const out = JSON.parse(txt.slice(startIdx, endIdx + 1));
     if (!Array.isArray(out.scores) || out.scores.length !== 5) {
-      throw new Error("Score format mismatch");
+      throw new Error("Invalid score array format");
     }
 
     out.scores = out.scores.map(n => Math.max(0, Math.min(10, Math.round(+n || 0))));
