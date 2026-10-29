@@ -1,2 +1,2 @@
 // Public values (safe in the browser). Supabase → Project Settings → API.
-window.CFG = { SUPABASE_URL: "https://mzzjtoakepeixagwfryr.supabase.co/rest/v1/", SUPABASE_ANON_KEY: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im16emp0b2FrZXBlaXhhZ3dmcnlyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTMxNzIxMjAsImV4cCI6MjEwODc0ODEyMH0.vxgjek9dlwOkHDUdR2ak-Hg3YSyLRIR22MYqEV9TC08", GOAL: 500, EVENT: "Sat, 8 pm IST" };
+window.CFG = { SUPABASE_URL: "https://mzzjtoakepeixagwfryr.supabase.co", SUPABASE_ANON_KEY: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im16emp0b2FrZXBlaXhhZ3dmcnlyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTMxNzIxMjAsImV4cCI6MjEwODc0ODEyMH0.vxgjek9dlwOkHDUdR2ak-Hg3YSyLRIR22MYqEV9TC08", GOAL: 500, EVENT: "Sat, 8 pm IST" };
